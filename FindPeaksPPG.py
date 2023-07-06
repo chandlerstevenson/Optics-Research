@@ -59,13 +59,23 @@ peak_indices, trough_indices, tol_peaks, tol_troughs = find_peaks(file_name_test
 
 print(peak_indices)
 
+# Frame rate in frames per second
+frame_rate = 34.8 
+
+# Create a time vector for the signal
+time_vector = np.arange(len(ppg_signal)) / frame_rate
+
+# Adjust your plotting function to include time:
 plt.figure(figsize=(12,8))
-plt.plot(ppg_signal, label='PPG Signal') 
-plt.plot(peak_indices,ppg_signal[peak_indices], "x",label='Peaks', color='r')  
-plt.plot(trough_indices, ppg_signal[trough_indices], "x", label='Troughs', color='g') 
-plt.plot(peak_indices, tol_peaks, label='Peak Tolerance', color='r')
-plt.plot(trough_indices, tol_troughs, label='Peak Tolerance', color='g')
+plt.plot(time_vector, ppg_signal, label='PPG Signal') 
+plt.plot(time_vector[peak_indices], ppg_signal[peak_indices], "x", label='Peaks', color='r')  
+plt.plot(time_vector[trough_indices], ppg_signal[trough_indices], "x", label='Troughs', color='g') 
+plt.plot(time_vector[peak_indices], tol_peaks, label='Peak Tolerance', color='r')
+plt.plot(time_vector[trough_indices], tol_troughs, label='Trough Tolerance', color='g')
+plt.xlabel('Time (s)')
+plt.ylabel('Amplitude')
 plt.legend()
 plt.show()
+
 
 
