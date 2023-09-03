@@ -1,10 +1,10 @@
-import os # Use as necessary 
+import os  # Use as necessary 
 import matplotlib.pyplot as plt
 import pandas as pd  
 import numpy as np
-import matplotlib.pyplot as plt
+from scipy.signal import butter, filtfilt
 
-#Use as necessary 
+# Use as necessary 
 def normalize(arr, t_min, t_max):
     norm_arr = []
     diff = t_max - t_min
@@ -14,6 +14,12 @@ def normalize(arr, t_min, t_max):
         norm_arr.append(temp)
     return norm_arr  
 
+def butterworth_filter(data, cutoff, fs, order=4):
+    nyq = 0.4 * fs
+    normal_cutoff = cutoff / nyq
+    b, a = butter(order, normal_cutoff, btype='low', analog=False)
+    y = filtfilt(b, a, data)
+    return y
 
 def find_peaks(signal, height, distance):
     peaks = []
@@ -30,31 +36,31 @@ def process_signal(filename, height, distance):
     time_step = df.iloc[:, 0]  # assuming that the first column is time step
     signals = df.iloc[:, 1]  # assuming that the second column is the signal
 
-    peaks = find_peaks(signals, height, distance)
+    # Applying Butterworth filter before peak detection
+    filtered_signals = butterworth_filter(signals, cutoff=3.0, fs=100.0)  # Assuming sampling rate = 100Hz, modify as needed
+    peaks = find_peaks(filtered_signals, height, distance)
 
-    floored_signal = np.copy(signals)
+    floored_signal = np.copy(filtered_signals)
     for i in range(len(peaks)):
         start_index = peaks[i - 1] if i > 0 else 0
         end_index = peaks[i]
-        segment = signals[start_index : end_index + 1]
+        segment = filtered_signals[start_index : end_index + 1]
         floored_segment = segment - np.min(segment)
         floored_signal[start_index : end_index + 1] = floored_segment
 
     if peaks:
         start_index = peaks[-1]
-        end_index = len(signals)
-        segment = signals[start_index : end_index + 1]
+        end_index = len(filtered_signals)
+        segment = filtered_signals[start_index : end_index + 1]
         floored_segment = segment - np.min(segment)
         floored_signal[start_index : end_index + 1] = floored_segment
 
     return time_step, floored_signal
 
-time_step, floored_signal = process_signal('bessel_seokee_4.7mw_0_Time.csv', 1, 10)
+time_step, floored_signal = process_signal('FILENAME.csv', 1, 10)
 
 # Plot the results
-plt.figure()
-plt.plot(time_step, floored_signal, label='floored')
+plt.figure() 
+plt.plot(time_step, floored_signal, label='floored') 
 plt.legend()
 plt.show()
-
-
