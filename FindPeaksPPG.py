@@ -10,10 +10,6 @@ import numpy as np
 from scipy.signal import argrelextrema
 import matplotlib.pyplot as plt
 
-import numpy as np
-import pandas as pd
-from scipy.signal import argrelextrema
-
 def find_peaks(file_name, skip_val, max_distance, peak_trough_distance):
     ppg_data = pd.read_csv(file_name)
     ppg_signal = ppg_data.iloc[:, 1].values
@@ -95,7 +91,7 @@ def find_peaks(file_name, skip_val, max_distance, peak_trough_distance):
     return new_peak_indices, new_trough_indices, tolerance_peaks, tolerance_troughs, frequency
 
 
-file_name_test = '900_Josh_Time.csv'
+file_name_test = 'FILENAME.csv'
 ppg = pd.read_csv(file_name_test) 
 ppg_signal = ppg.iloc[:, 1].values
 
