@@ -77,7 +77,7 @@ image_files = [
 ]
 
 # Output CSV file
-csv_file_path = os.path.join(main_directory, 'brightness_values.csv')
+csv_file_path = os.path.join(main_directory, 'stokes_values.csv')
 
 # Ensure the header is written if the CSV does not exist
 if not os.path.exists(csv_file_path):
