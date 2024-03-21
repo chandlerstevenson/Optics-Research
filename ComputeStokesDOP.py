@@ -1,6 +1,5 @@
 #!/usr/bin/env python3.11
 
-#Written by: Chandler Stevenson, PROBE Lab
 import os
 import csv
 from PIL import Image, ImageStat 
@@ -77,7 +76,7 @@ image_files = [
 ]
 
 # Output CSV file
-csv_file_path = os.path.join(main_directory, 'stokes_values.csv')
+csv_file_path = os.path.join(main_directory, 'stokes_calcs.csv')
 
 # Ensure the header is written if the CSV does not exist
 if not os.path.exists(csv_file_path):
@@ -91,4 +90,4 @@ for directory_name, directory_path in subdirectories:
     # Calculate degree of polarization and write rows to CSV
     write_to_csv(csv_file_path, [row1, row2], header=header)
 
-print('Brightness values have been written to', csv_file_path)
+print('Stokes + DOP values have been written to', csv_file_path)
