@@ -1,5 +1,3 @@
-#!/usr/bin/env python3.11
-
 import os  # Import the os module for interacting with the operating system
 import csv  # Import the csv module for CSV file operations
 
