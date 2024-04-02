@@ -1,5 +1,3 @@
-#!/usr/bin/env python3.11
-
 import os
 import csv
 from PIL import Image, ImageStat 
