@@ -2,21 +2,20 @@
 
 import pandas as pd
 import matplotlib.pyplot as plt
-import sys
 
 def fold_nums(num): 
     return ((num + 45) % (90)) - 45
 
 def return_num(num):
     if num in [-45, 45]:
-        modified_num = num  # This is redundant, as you're not changing num
+        modified_num = num  
     elif num in [135, 180]:
         modified_num = 180 - num
         if modified_num == 135:  
             modified_num = 45
     else:
-        modified_num = fold_nums(num)  # Assuming fold_nums is a function you've defined elsewhere
-    return modified_num  # Return the modified list
+        modified_num = fold_nums(num) 
+    return modified_num  
 
 def plot_histogram(csv_path):
     """Reads a CSV, applies 'return_num' to the first column, and plots a histogram."""
