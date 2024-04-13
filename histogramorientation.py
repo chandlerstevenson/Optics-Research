@@ -5,7 +5,8 @@ import glob  # Used for Unix style pathname pattern expansion
 import os  
 import re  # Module for working with regular expressions
 import matplotlib.pyplot as plt  
-import csv  
+import csv   
+import numpy as np
 
 def save_orientations_to_csv(orientations, file_paths, output_file):
     """Saves the orientations and file names to a CSV file."""
@@ -47,7 +48,7 @@ def process_all_files(main_directory):
                 except ValueError as e:
                     print(f"Error processing line in {filepath}: {line.strip()} - {e}")
             # Adjust orientations by subtracting conversion vector elements and store them
-            adjusted_orientations = [orientation - conversion for orientation, conversion in zip(file_orientations, conversion_vector)]
+            adjusted_orientations = [np.abs(orientation - conversion) for orientation, conversion in zip(file_orientations, conversion_vector)]
             all_orientations.append(adjusted_orientations)  # Add adjusted orientations to the main list
     
     return all_orientations, files  # Return the list of all orientations and the list of file paths
