@@ -14,6 +14,7 @@ import numpy as np
 # Limits on z: [0, 1/3]
 # Limits on alpha: [0, .25] 
 
+
 def generate_vector():
     # Start by generating initial random values within their full allowed ranges
     x = random.uniform(0.25, 1)
@@ -387,23 +388,38 @@ def modify_vectors(data):
     
     return modified_data
 
-
 # Set number of plot points 
 run_sim = num_simulation_runs(100000)
 modified_sim = modify_vectors(run_sim) 
 
+def percent_rank(data):
+    from collections import Counter
+    
+    # Extract numbers from the second position in each tuple
+    numbers = [num for _, num in data]
+    
+    # Count occurrences of each number
+    count = Counter(numbers)
+    
+    # Calculate total number of elements
+    total = sum(count.values())
+    
+    # Calculate and print percentage of each number from 1 to 4
+    for num in range(1, 5):
+        if num in count:
+            percentage = (count[num] / total) * 100
+        else:
+            percentage = 0
+        print(f"Percentage of Rank {num}: {percentage:.2f}%")
 
-# plot rank n 
+
+# Call the function to plot the data  
+# print(run_sim)
+percent_rank(run_sim)
 plot_rank_1(run_sim)
 plot_rank_2(run_sim)
 plot_rank_3(run_sim)
-plot_rank_4(run_sim)  
-
-# plot small dot graph 
+plot_rank_4(run_sim) 
 plot_theoretical_small(run_sim)
-
-# plot exploded graph
 plot_blank(modified_sim)
-
-# plot original graph
 plot_efficient_3d_data(run_sim)
