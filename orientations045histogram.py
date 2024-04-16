@@ -1,5 +1,6 @@
 #!/usr/bin/env python3.11 
 
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -15,7 +16,7 @@ def return_num(num):
             modified_num = 45
     else:
         modified_num = fold_nums(num) 
-    return modified_num  
+    return np.abs(modified_num)  
 
 def plot_histogram(csv_path):
     """Reads a CSV, applies 'return_num' to the first column, and plots a histogram."""
@@ -40,4 +41,3 @@ def plot_histogram(csv_path):
 
 
 plot_histogram('/Users/chandlerstevenson/Downloads/orientation_values.csv')
-
