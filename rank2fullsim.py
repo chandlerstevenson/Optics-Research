@@ -43,14 +43,15 @@ def compute_eigenvals_rank2(snr_val):
     SnR = snr_val  # Noise in dB
     y = awgn(EHa, SnR)
     z = awgn(EHb, SnR)
-    x = awgn(EVb, SnR)
+    x = awgn(EVb, SnR) 
+    v = awgn(EVa, SnR)
     # Recompute G for noisy signals
 
     # Check over this !!!!!!!!
     G = np.array([[np.mean(y * np.conj(y)), np.mean(y * np.conj(EVa)), np.mean(y * np.conj(z)), np.mean(y * np.conj(x))],
-                  [np.mean(EVa * np.conj(y)), np.mean(EVa * np.conj(EVa)), np.mean(EVa * np.conj(z)), np.mean(EVa * np.conj(x))],
+                  [np.mean(v * np.conj(y)), np.mean(v * np.conj(EVa)), np.mean(v * np.conj(z)), np.mean(v * np.conj(x))],
                   [np.mean(z * np.conj(y)), np.mean(z * np.conj(EVa)), np.mean(z * np.conj(z)), np.mean(z * np.conj(x))],
-                  [np.mean(EVb * np.conj(y)), np.mean(x * np.conj(EVa)), np.mean(x * np.conj(z)), np.mean(x * np.conj(x))]])
+                  [np.mean(x * np.conj(y)), np.mean(x * np.conj(EVa)), np.mean(x * np.conj(z)), np.mean(x * np.conj(x))]])
     G /= np.trace(G)
     eigenvals = eigh(G, eigvals_only=True)
 
@@ -170,5 +171,5 @@ def plot_ber_and_dist_vs_snr(snr_values, num_runs):
     plt.show()
 
 
-snr_range = [1, 10, 20, 40 , 60, 80]  # Define your range of SNR values
+snr_range = [.00000000001, 1 ]  # Define your range of SNR values
 plot_ber_and_dist_vs_snr(snr_range, 1000)  # 100 runs for each SNR value
