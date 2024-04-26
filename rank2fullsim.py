@@ -171,5 +171,5 @@ def plot_ber_and_dist_vs_snr(snr_values, num_runs):
     plt.show()
 
 
-snr_range = [.00000000001, 1 ]  # Define your range of SNR values
+snr_range = [.00000000000000000000000000000000000000000000001, 1, 2, 4, 10, 20, 30, 40] 
 plot_ber_and_dist_vs_snr(snr_range, 1000)  # 100 runs for each SNR value
