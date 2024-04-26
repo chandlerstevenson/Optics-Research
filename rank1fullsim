@@ -136,7 +136,7 @@ def plot_ber_and_dist_vs_snr(snr_values, num_runs):
     
     # Plot BER vs SNR
     plt.figure(figsize=(10, 6))
-    plt.semilogy(snr_values, ber_values, 'b-o', label='BER vs. SNR')
+    plt.plot(snr_values, ber_values, 'b-o', label='BER vs. SNR')
     plt.title('Bit Error Rate vs. Signal-to-Noise Ratio')
     plt.xlabel('SNR (dB)')
     plt.ylabel('BER (log scale)')
@@ -155,5 +155,5 @@ def plot_ber_and_dist_vs_snr(snr_values, num_runs):
     plt.show()
 
 
-snr_range = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]  # Define your range of SNR values
+snr_range = [.00000000000000000000000000000000000000000000001, 1, 2, 4, 10, 20, 30, 40]  # Define your range of SNR values
 plot_ber_and_dist_vs_snr(snr_range, 1000)  # 100 runs for each SNR value
