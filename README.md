@@ -1,4 +1,4 @@
-# README - Computational Analysis Tools
+# README - Optical Computational Analysis Tools
 
 ## Author: Chandler W. Stevenson
 ### Affiliation: Brown University, PROBE Lab
