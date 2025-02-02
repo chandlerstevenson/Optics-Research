@@ -1,175 +1,96 @@
+"""
+Author: Chandler W. Stevenson
+Affiliation: Brown University, PROBE Lab
+
+Description:
+This script simulates eigenvalue computations of rank-2 signals under varying Signal-to-Noise Ratios (SNR).
+It introduces Additive White Gaussian Noise (AWGN) to the signals and computes eigenvalues, ranking them
+based on their distance from ideal vectors. The script evaluates Bit Error Rate (BER) and average distance
+from the ideal vector, plotting BER and distance versus SNR to analyze the robustness of eigenvalue classification.
+"""
+
 import numpy as np
 from scipy.linalg import eigh
+import matplotlib.pyplot as plt
+
+def awgn(signal, snr):
+    """Adds Additive White Gaussian Noise (AWGN) to a signal."""
+    signal_power = np.mean(signal**2)
+    snr_linear = 10**(snr / 10)
+    noise_power = signal_power / snr_linear
+    noise = np.random.normal(0, np.sqrt(noise_power), signal.shape)
+    return signal + noise
 
 def compute_eigenvals_rank2(snr_val):
-    # Constants 
-
-    phi_1 = np.pi * np.random.rand(10000)
-    phi_2 = np.pi * np.random.rand(10000)
-
-    E1 = 1
-    E2 = 1
-    Fs = 10000
+    """
+    Computes eigenvalues of a rank-2 signal with added noise at a given SNR.
+    """
+    phi_1, phi_2 = np.pi * np.random.rand(10000), np.pi * np.random.rand(10000)
+    E1, E2, Fs, nu = 1, 1, 10000, 10
     t = np.linspace(0, 1 - 1 / Fs, Fs)
-    nu = 10  # frequency (monochromatic)
-
-    # Signal definitions
-    EHa = E1 * np.cos(phi_1)
-
-    EHb = E2 * np.cos(phi_2)
-
-    EVa = E1 * np.cos(phi_1)
-    EVb = E2 * np.cos(phi_2)
-
-    # Function to add white Gaussian noise 
-    # Prove that the noise is white and gaussian, plot 
-    def awgn(signal, snr):
-        # Calculate the signal power
-        signal_power = np.mean(signal**2)
-        
-        # Convert SNR from dB to a linear scale
-        snr_linear = 10**(snr / 10)
-        
-        # Calculate the noise power based on the signal power and SNR
-        noise_power = signal_power / snr_linear
-        
-        # Generate white Gaussian noise with mean 0 and calculated noise power
-        noise = np.random.normal(0, np.sqrt(noise_power), signal.shape)
-        
-        # Add noise to the original signal and return
-        noisy_signal = signal + noise
-        return noisy_signal
-
-    SnR = snr_val  # Noise in dB
-    y = awgn(EHa, SnR)
-    z = awgn(EHb, SnR)
-    x = awgn(EVb, SnR) 
-    v = awgn(EVa, SnR)
-    # Recompute G for noisy signals
-
-    # Check over this !!!!!!!!
+    EHa, EHb = E1 * np.cos(phi_1), E2 * np.cos(phi_2)
+    EVa, EVb = E1 * np.cos(phi_1), E2 * np.cos(phi_2)
+    y, z, x, v = awgn(EHa, snr_val), awgn(EHb, snr_val), awgn(EVb, snr_val), awgn(EVa, snr_val)
     G = np.array([[np.mean(y * np.conj(y)), np.mean(y * np.conj(EVa)), np.mean(y * np.conj(z)), np.mean(y * np.conj(x))],
                   [np.mean(v * np.conj(y)), np.mean(v * np.conj(EVa)), np.mean(v * np.conj(z)), np.mean(v * np.conj(x))],
                   [np.mean(z * np.conj(y)), np.mean(z * np.conj(EVa)), np.mean(z * np.conj(z)), np.mean(z * np.conj(x))],
                   [np.mean(x * np.conj(y)), np.mean(x * np.conj(EVa)), np.mean(x * np.conj(z)), np.mean(x * np.conj(x))]])
     G /= np.trace(G)
-    eigenvals = eigh(G, eigvals_only=True)
+    return eigh(G, eigvals_only=True), 2
 
-    return (eigenvals, 2)
-
-
-
-# ()
-
-
-# Ensure that rank vector is in descending order 
-def round_and_sort_elements(original_vector):   
-    original_vector = np.array(original_vector) 
-    round_1 = np.round(original_vector[0], 2)
-    round_2 = np.round(original_vector[1], 2)
-    round_3 = np.round(original_vector[2], 2)
-    round_4 = np.round(original_vector[3], 2) 
-    rounded_vector = np.array([round_1, round_2, round_3, round_4]) 
-    sorted_and_rounded_vector = np.sort(rounded_vector)
-    return sorted_and_rounded_vector[::-1]
-
-
-vector, _ = compute_eigenvals_rank2(1) 
-
-print(vector)
-# Ideal rank vector 
-ideal_vector = np.array([[1, 0, 0, 0], [0.5, 0.5, 0, 0], [1/3, 1/3, 1/3, 0], [0.25, 0.25, 0.25, 0.25]]) 
-
-# # EUCLIDEAN DISTANCE ---------------------------------------------------------------------------
-# Calculates distance of  input vector from ideal vector 
 def calculate_distance(input_vector, ideal_vector):
-    distance_vector = np.array([])
-    for vec in ideal_vector:
-        if len(vec) != len(input_vector):
-            raise ValueError("Vectors must have the same dimensionality")
-        distance = np.sqrt(sum((vec[i] - input_vector[i])**2 for i in range(len(input_vector))))
-        distance_vector = np.append(distance_vector, distance)
-    return distance_vector 
+    """Calculates Euclidean distance from ideal vectors."""
+    return np.array([np.linalg.norm(vec - input_vector) for vec in ideal_vector])
 
+def calculate_rank(distanced_vector):
+    """Determines rank based on the closest ideal vector."""
+    return np.argmin(distanced_vector) + 1
 
-# rank is the minimum distance to an ideal rank vector
-def calculate_rank(distanced_vector):  
-    rank_set = [1, 2, 3, 4]
-    calculated_rank = rank_set[np.argmin(distanced_vector)] 
-    return calculated_rank
-
-def calculate_ber(original_rank, actual_rank):   
-    # 1: 00 
-    # 2: 01 
-    #3 : 10 
-    #4 : 11 
-    num = np.abs(original_rank-actual_rank) 
-    ber_map = {0:0, 1:1, 2:2, 3:2}
-    
-    # Apply the mapping to the difference if the difference exists in the mapping
-    if num in ber_map:
-        ber_value = ber_map[num]
-    else:
-        ber_value = num  # Or handle it differently if the num is not in the mapping
-    
-    return ber_value
+def calculate_ber(original_rank, actual_rank):
+    """Calculates Bit Error Rate (BER) based on rank deviation."""
+    ber_map = {0: 0, 1: 1, 2: 2, 3: 2}
+    diff = abs(original_rank - actual_rank)
+    return ber_map.get(diff, diff)
 
 def num_simulation_runs(run_times, snr_val):
-    ber_vals = []
-    dist_vals = []
-    
-    for i in range(run_times):
+    """Runs simulations and computes average BER and distance metrics."""
+    ber_vals, dist_vals = [], []
+    for _ in range(run_times):
         try:
             generated_vector, _ = compute_eigenvals_rank2(snr_val)
-            rounded_sorted_vector = round_and_sort_elements(generated_vector)
-            dist_vector = calculate_distance(rounded_sorted_vector, ideal_vector)
+            dist_vector = calculate_distance(generated_vector, ideal_vector)
             calced_rank = calculate_rank(dist_vector)
-            ber = calculate_ber(2, calced_rank)  
-            
+            ber = calculate_ber(2, calced_rank)
             ber_vals.append(ber)
-            dist_vals.append(np.min(dist_vector))  # Store the minimum distance from the ideal vectors
+            dist_vals.append(np.min(dist_vector))
         except Exception as e:
-            print(f"An error occurred during run {i}: {e}")
+            print(f"Error: {e}")
             continue
-
-    avg_ber = np.mean(ber_vals) if ber_vals else 0  # Compute average BER
-    avg_dist = np.mean(dist_vals) if dist_vals else 0  # Compute average distance
-    return avg_ber, avg_dist
-
-# Comments: Note that the avg_dist will only follow if BER = 0, parse vector instead of argmin
-#           Change it to [rank] as opposed to ... stated above 
-#           
-import matplotlib.pyplot as plt
+    return np.mean(ber_vals), np.mean(dist_vals)
 
 def plot_ber_and_dist_vs_snr(snr_values, num_runs):
-    ber_values = []
-    dist_values = []
-    
+    """Plots BER and average distance versus SNR."""
+    ber_values, dist_values = [], []
     for snr in snr_values:
         avg_ber, avg_dist = num_simulation_runs(num_runs, snr)
         ber_values.append(avg_ber)
         dist_values.append(avg_dist)
-    
-    # Plot BER vs SNR
     plt.figure(figsize=(10, 6))
     plt.plot(snr_values, ber_values, 'b-o', label='BER vs. SNR')
     plt.title('Bit Error Rate vs. Signal-to-Noise Ratio')
     plt.xlabel('SNR (dB)')
     plt.ylabel('BER')
-    plt.grid(True, which='both', linestyle='--', linewidth=0.5)
+    plt.grid(True, linestyle='--', linewidth=0.5)
     plt.legend()
     plt.show()
-
-    # Plot Distance vs SNR
     plt.figure(figsize=(10, 6))
     plt.plot(snr_values, dist_values, 'r-o', label='Average Distance vs. SNR')
     plt.title('Average Distance from Ideal Vector vs. Signal-to-Noise Ratio')
     plt.xlabel('SNR (dB)')
     plt.ylabel('Average Distance')
-    plt.grid(True, which='both', linestyle='--', linewidth=0.5)
+    plt.grid(True, linestyle='--', linewidth=0.5)
     plt.legend()
     plt.show()
 
-
-snr_range = [.00000000000000000000000000000000000000000000001, 1, 2, 4, 10, 20, 30, 40] 
-plot_ber_and_dist_vs_snr(snr_range, 1000)  # 100 runs for each SNR value
+snr_range = [1e-45, 1, 2, 4, 10, 20, 30, 40]
+plot_ber_and_dist_vs_snr(snr_range, 1000)
