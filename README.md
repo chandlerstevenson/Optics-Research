@@ -13,6 +13,8 @@ This repository contains a collection of Python scripts developed for computatio
 - Signal processing and smoothing
 - Real-time plotting and GUI applications
 - Optimal window size detection for time-series analysis
+- Rank calculations and vector analysis
+- Pixel analysis and histogram plotting
 
 Each script is designed to perform specific tasks essential for analyzing physiological signals, image processing, and time-series data. The following sections describe each script's functionality, dependencies, and usage instructions.
 
@@ -25,125 +27,62 @@ Each script is designed to perform specific tasks essential for analyzing physio
 4. [Fourier Transform and Partitioning](#fourier-transform-and-partitioning)
 5. [Live Plotting and GUI](#live-plotting-and-gui)
 6. [Optimal Window Size Calculation](#optimal-window-size-calculation)
-7. [Installation and Dependencies](#installation-and-dependencies)
-8. [Usage](#usage)
+7. [Rank and Distance Calculation](#rank-and-distance-calculation)
+8. [Pixel Analysis and Histograms](#pixel-analysis-and-histograms)
+9. [Installation and Dependencies](#installation-and-dependencies)
+10. [Usage](#usage)
 
 ---
 
-## Confusion Matrix Visualization
-**Script:** `ConfusionMatrix.py`
-
-**Description:**
-This script generates a confusion matrix visualization based on provided classification metrics (True Positives, False Positives, False Negatives, True Negatives). It allows for quick evaluation of model performance using a heatmap.
-
-**Usage:**
-```sh
-python ConfusionMatrix.py
-```
-
-**Features:**
-- Generates a 2x2 confusion matrix
-- Supports adjustable color schemes for different classification errors
-- Annotates values in percentage format
-
----
-
-## Peak Intensity and PPG Analysis
+## Rank and Distance Calculation
 **Scripts:**
-- `FindPeakIntensity.py`
-- `FindPeaksPPG.py`
+- `calcrankset.py`
+- `lindistancecalcrankset.py`
+- `rank_simulation.py`
 
 **Description:**
-These scripts analyze photoplethysmography (PPG) signal data to detect peaks and compute their intensities. They are essential for analyzing pulsatile physiological signals and estimating heart rate variability.
+These scripts compute and simulate rank distributions based on calculated distances from ideal vectors. They apply various distance metrics to classify vectors into ranks and simulate their distributions.
 
 **Usage:**
 ```sh
-python FindPeakIntensity.py
-python FindPeaksPPG.py
+python calcrankset.py
+python lindistancecalcrankset.py
+python rank_simulation.py
 ```
 
 **Features:**
-- Identifies peaks and troughs in PPG data
-- Computes intensity variations over time
-- Can be used for noise filtering and smoothing
+- Computes rank classifications using distance metrics
+- Simulates rank distributions across large datasets
+- Supports different ranking methodologies
 
 ---
 
-## Signal Processing and Data Smoothing
+## Pixel Analysis and Histograms
 **Scripts:**
-- `Floor_PPG_Data.py`
-- `FrequencyResponse.py`
+- `pixelcountandlocation.py`
+- `histogram_HWP_orientation.py`
+- `orientations045histogram.py`
+- `plot100krandpoints.py`
+- `plotnoisefigure.py`
+- `prettyshapegraphs.py`
 
 **Description:**
-These scripts apply filtering techniques to smooth noisy signals and enhance feature detection. `Floor_PPG_Data.py` processes and normalizes time-series data, while `FrequencyResponse.py` visualizes frequency domain characteristics of the processed signals.
+These scripts analyze pixel distributions in images, compute histograms, and visualize various data distributions. `pixelcountandlocation.py` identifies pixel locations and intensities, while the histogram scripts create detailed visualizations.
 
 **Usage:**
 ```sh
-python Floor_PPG_Data.py
-python FrequencyResponse.py
+python pixelcountandlocation.py
+python histogram_HWP_orientation.py
+python orientations045histogram.py
+python plot100krandpoints.py
+python plotnoisefigure.py
+python prettyshapegraphs.py
 ```
 
 **Features:**
-- Implements Butterworth and other smoothing filters
-- Computes frequency response of time-series data
-- Helps in denoising physiological signals
-
----
-
-## Fourier Transform and Partitioning
-**Scripts:**
-- `K_Partitions_Fourier.py`
-- `K_Partitions_Time.py`
-
-**Description:**
-These scripts apply partitioning techniques to time-series data and compute the Fourier Transform of each partition. This allows for time-localized frequency analysis, useful in detecting transient features in signals.
-
-**Usage:**
-```sh
-python K_Partitions_Fourier.py
-python K_Partitions_Time.py
-```
-
-**Features:**
-- Divides time-series data into multiple segments
-- Applies Fourier Transform to each segment
-- Provides insights into non-stationary signal characteristics
-
----
-
-## Live Plotting and GUI
-**Script:** `LivePlotGUI.py`
-
-**Description:**
-This script provides a real-time plotting interface for analyzing incoming data streams. It is useful for monitoring physiological signals in real-time.
-
-**Usage:**
-```sh
-python LivePlotGUI.py
-```
-
-**Features:**
-- Interactive GUI for live plotting
-- Adjustable update intervals for different sampling rates
-- Supports multiple data visualization modes
-
----
-
-## Optimal Window Size Calculation
-**Script:** `OptimalWindowSize.py`
-
-**Description:**
-This script determines the optimal window size for partitioning time-series data based on variance analysis. It is essential for applications requiring adaptive segmentation, such as heart rate analysis and PPG signal processing.
-
-**Usage:**
-```sh
-python OptimalWindowSize.py
-```
-
-**Features:**
-- Computes variance across different partition sizes
-- Selects optimal window based on statistical stability
-- Enhances performance of subsequent signal analysis
+- Identifies and counts pixel intensities in images
+- Generates histograms of orientation and noise distributions
+- Produces scatter plots for large datasets
 
 ---
 
