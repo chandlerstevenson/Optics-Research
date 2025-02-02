@@ -1,21 +1,32 @@
+"""
+Author: Chandler W. Stevenson
+Affiliation: Brown University, PROBE Lab
+
+Description:
+This script generates a sine wave signal, adds Additive White Gaussian Noise (AWGN) to it
+based on a specified Signal-to-Noise Ratio (SNR), and visualizes the noise distribution
+through a histogram with an overlaid normal distribution curve.
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 
 def awgn(signal, snr):
-    # Calculate the signal power
+    """
+    Adds Additive White Gaussian Noise (AWGN) to a given signal.
+    
+    Parameters:
+    signal (numpy.array): Input signal.
+    snr (float): Signal-to-Noise Ratio in dB.
+    
+    Returns:
+    tuple: Noisy signal and generated noise.
+    """
     signal_power = np.mean(signal**2)
-    
-    # Convert SNR from dB to a linear scale
     snr_linear = 10**(snr / 10)
-    
-    # Calculate the noise power based on the signal power and SNR
     noise_power = signal_power / snr_linear
-    
-    # Generate white Gaussian noise with mean 0 and calculated noise power
     noise = np.random.normal(0, np.sqrt(noise_power), signal.shape)
-    
-    # Add noise to the original signal and return
     noisy_signal = signal + noise
     return noisy_signal, noise
 
